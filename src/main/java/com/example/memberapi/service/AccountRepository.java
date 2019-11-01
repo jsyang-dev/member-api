@@ -1,7 +1,7 @@
 package com.example.memberapi.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.example.memberapi.model.Account;
+import com.example.memberapi.domain.Account;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

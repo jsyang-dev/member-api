@@ -1,4 +1,4 @@
-package com.example.memberapi.model;
+package com.example.memberapi.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
@@ -7,7 +7,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @DynamoDBTable(tableName = "ACCOUNT")
 public class Account {
     @DynamoDBHashKey(attributeName = "USERNAME")
@@ -32,5 +32,9 @@ public class Account {
         this.name = name;
         this.phone = phone;
         this.email = email;
+    }
+
+    public boolean isNotEqualPassword(String password) {
+        return !this.password.equals(password);
     }
 }

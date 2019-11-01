@@ -1,11 +1,13 @@
 package com.example.memberapi.service;
 
-import com.example.memberapi.model.Account;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.example.memberapi.domain.Account;
+import com.example.memberapi.dto.AccountResponseDto;
+import com.example.memberapi.dto.AccountSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import javax.validation.constraints.NotNull;
 
 @Service
 @RequiredArgsConstructor
@@ -13,12 +15,42 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public Account loginByUserName(String userName, String password){
-        if(StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)){
-           // throws IllegalArgumentException("잘모 ㄴㅂ사ㄱㅗㄷㅅㄴㄴ")
+    public AccountResponseDto loginByUserName(final String userName, final String password) {
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)) {
+            throw new IllegalArgumentException("잘못된 값이 들어왔습니다!");
         }
         Account account = accountRepository.findAccountByUserName(userName);
+        if (account == null) {
+            throw new IllegalArgumentException("해당 사용자가 존재하지 않습니다!");
+        }
+        if (account.isNotEqualPassword(password)) {
+            throw new IllegalArgumentException("패스워드가 잘못되었습니다!");
+        }
 
-        return account;
+        AccountResponseDto accountResponseDto = AccountResponseDto.createBuilder()
+                .userName(account.getUserName())
+                .email(account.getEmail())
+                .name(account.getName())
+                .phone(account.getPhone())
+                .build();
+
+        return accountResponseDto;
+    }
+
+    public String saveAccount(@NotNull AccountSaveRequestDto accountSaveRequestDto){
+        if(accountRepository.findAccountByUserName(accountSaveRequestDto.getUserName()) != null){
+            throw new IllegalArgumentException("이미 존재하는 사용자 이름입니다!");
+        }
+        Account account = Account.createBuilder()
+                .userName(accountSaveRequestDto.getUserName())
+                .password(accountSaveRequestDto.getPassword())
+                .name(accountSaveRequestDto.getName())
+                .email(accountSaveRequestDto.getEmail())
+                .phone(accountSaveRequestDto.getPhone())
+                .build();
+
+        accountRepository.updateAccount(account);
+        return account.getUserName();
     }
 }
+
