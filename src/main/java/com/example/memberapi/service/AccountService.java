@@ -3,6 +3,7 @@ package com.example.memberapi.service;
 import com.example.memberapi.domain.Account;
 import com.example.memberapi.dto.AccountResponseDto;
 import com.example.memberapi.dto.AccountSaveRequestDto;
+import com.example.memberapi.dto.AccountUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -52,5 +53,20 @@ public class AccountService {
         accountRepository.updateAccount(account);
         return account.getUserName();
     }
+
+    public String updateAccount(@NotNull AccountUpdateRequestDto accountUpdateRequestDto){
+        Account account = accountRepository.findAccountByUserName(accountUpdateRequestDto.getUserName());
+        if(account == null){
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다!");
+        }
+        account.setPhone(accountUpdateRequestDto.getPhone());
+        account.setEmail(accountUpdateRequestDto.getEmail());
+        account.setPassword(accountUpdateRequestDto.getPassword());
+
+        accountRepository.updateAccount(account);
+
+        return account.getUserName();
+    }
+
 }
 
