@@ -1,7 +1,7 @@
 package com.example.memberapi.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.example.memberapi.model.Account;
+import com.example.memberapi.domain.Account;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ public class AccountRepository {
 
     private final DynamoDBMapper dynamoDBMapper;
 
-    public Account findAccountByUserName(String userName) {
+    public Account findAccountByUserName(final String userName) {
         return dynamoDBMapper.load(Account.class, userName);
     }
 
@@ -20,5 +20,4 @@ public class AccountRepository {
         dynamoDBMapper.save(account);
         return account;
     }
-
 }

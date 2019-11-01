@@ -1,62 +1,67 @@
 package com.example.memberapi.service;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
-import com.amazonaws.services.dynamodbv2.model.PutItemResult;
-import com.example.memberapi.model.Account;
-import org.junit.After;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.example.memberapi.domain.Account;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 class AccountRepositoryTest {
 
     @Autowired
     DynamoDBMapper dynamoDBMapper;
-
+    @Autowired
+    AmazonDynamoDB amazonDynamoDB;
     @Autowired
     AccountRepository accountRepository;
 
+    //TODO: BeforeEach, AfterEach 해결하자!
     @BeforeEach
-    void setUp() {
+    void createTable() {
+        CreateTableRequest createTableRequest = dynamoDBMapper.generateCreateTableRequest(Account.class)
+                .withProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
+
+        TableUtils.createTableIfNotExists(amazonDynamoDB, createTableRequest);
+
         Account account = Account.createBuilder()
                 .userName("admin")
                 .name("정찬희")
                 .password("1234")
                 .email("admin@lotte.net")
-                .phone("010-1234-1234")
+                .phone("010-2345-1234")
                 .build();
 
-        dynamoDBMapper.save(account);
+        //when
+        accountRepository.updateAccount(account);
+
     }
+
+
+    @AfterEach
+    void cleanUp() {
+        DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(Account.class);
+        TableUtils.deleteTableIfExists(amazonDynamoDB, deleteTableRequest);
+    }
+
 
     @Test
     void userName으로_Account_찾기_테스트(){
         Account account = accountRepository.findAccountByUserName("admin");
 
         assertThat(account.getName()).isEqualTo("정찬희");
-        assertThat(account.getPassword()).isEqualTo("1234");
-        assertThat(account.getPhone()).isEqualTo("010-1234-1234");
         assertThat(account.getEmail()).isEqualTo("admin@lotte.net");
     }
 
@@ -78,7 +83,6 @@ class AccountRepositoryTest {
         Account findAccount = accountRepository.findAccountByUserName(account.getUserName());
         assertThat(findAccount).isEqualToComparingFieldByField(account);
 
-        dynamoDBMapper.delete(account);
     }
 
     @Test
@@ -88,7 +92,7 @@ class AccountRepositoryTest {
                 .userName("admin")
                 .name("정찬희")
                 .password("12345")
-                .email("lotte@lotte.net")
+                .email("admin@lotte.net")
                 .phone("010-2345-1234")
                 .build();
 
