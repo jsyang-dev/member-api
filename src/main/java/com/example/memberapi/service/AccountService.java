@@ -4,6 +4,7 @@ import com.example.memberapi.domain.Account;
 import com.example.memberapi.dto.AccountResponseDto;
 import com.example.memberapi.dto.AccountSaveRequestDto;
 import com.example.memberapi.dto.AccountUpdateRequestDto;
+import com.example.memberapi.exception.AccountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,16 +17,16 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public AccountResponseDto loginByUserName(final String userName, final String password) {
+    public AccountResponseDto findAccountByUserNameAndPassword(final String userName, final String password) throws AccountException {
         if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)) {
             throw new IllegalArgumentException("잘못된 값이 들어왔습니다!");
         }
         Account account = accountRepository.findAccountByUserName(userName);
         if (account == null) {
-            throw new IllegalArgumentException("해당 사용자가 존재하지 않습니다!");
+            throw new AccountException("해당 사용자가 존재하지 않습니다!");
         }
         if (account.isNotEqualPassword(password)) {
-            throw new IllegalArgumentException("패스워드가 잘못되었습니다!");
+            throw new AccountException("패스워드가 잘못되었습니다!");
         }
 
         AccountResponseDto accountResponseDto = AccountResponseDto.createBuilder()
@@ -38,9 +39,9 @@ public class AccountService {
         return accountResponseDto;
     }
 
-    public String saveAccount(@NotNull AccountSaveRequestDto accountSaveRequestDto){
+    public String saveAccount(@NotNull AccountSaveRequestDto accountSaveRequestDto) throws AccountException {
         if(accountRepository.findAccountByUserName(accountSaveRequestDto.getUserName()) != null){
-            throw new IllegalArgumentException("이미 존재하는 사용자 이름입니다!");
+            throw new AccountException("이미 존재하는 사용자 이름입니다!");
         }
         Account account = Account.createBuilder()
                 .userName(accountSaveRequestDto.getUserName())
@@ -54,10 +55,10 @@ public class AccountService {
         return account.getUserName();
     }
 
-    public String updateAccount(@NotNull AccountUpdateRequestDto accountUpdateRequestDto){
+    public String updateAccount(@NotNull AccountUpdateRequestDto accountUpdateRequestDto) throws AccountException {
         Account account = accountRepository.findAccountByUserName(accountUpdateRequestDto.getUserName());
         if(account == null){
-            throw new IllegalArgumentException("존재하지 않는 사용자입니다!");
+            throw new AccountException("존재하지 않는 사용자입니다!");
         }
         account.setPhone(accountUpdateRequestDto.getPhone());
         account.setEmail(accountUpdateRequestDto.getEmail());

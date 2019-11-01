@@ -8,20 +8,13 @@ import com.example.memberapi.domain.Account;
 import com.example.memberapi.dto.AccountResponseDto;
 import com.example.memberapi.dto.AccountSaveRequestDto;
 import com.example.memberapi.dto.AccountUpdateRequestDto;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterAll;
+import com.example.memberapi.exception.AccountException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -69,8 +62,8 @@ class AccountServiceTest {
     }
 
     @Test
-    void 로그인_성공_케이스() {
-        AccountResponseDto account = accountService.loginByUserName("admin", "1234");
+    void 로그인_성공_케이스() throws AccountException {
+        AccountResponseDto account = accountService.findAccountByUserNameAndPassword("admin", "1234");
 
         assertThat(account.getName()).isEqualTo("정찬희");
         assertThat(account.getEmail()).isEqualTo("admin@lotte.net");
@@ -78,18 +71,18 @@ class AccountServiceTest {
 
     @Test
     void 로그인_실패_케이스_비밀번호_틀림() {
-        assertThatThrownBy(() -> accountService.loginByUserName("admin", "12345"))
+        assertThatThrownBy(() -> accountService.findAccountByUserNameAndPassword("admin", "12345"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 로그인_실패_케이스_없는_사용자() {
-        assertThatThrownBy(() -> accountService.loginByUserName("admin1234", "1234"))
+        assertThatThrownBy(() -> accountService.findAccountByUserNameAndPassword("admin1234", "1234"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 유저_생성_성공_테스트(){
+    void 유저_생성_성공_테스트() throws AccountException {
         AccountSaveRequestDto accountSaveRequestDto = AccountSaveRequestDto.createBuilder()
                 .userName("test")
                 .password("1234")
@@ -133,7 +126,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 유저_정보_수정(){
+    void 유저_정보_수정() throws AccountException {
         AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.createBuilder()
                 .userName("admin")
                 .email("admin@lotte.net")
