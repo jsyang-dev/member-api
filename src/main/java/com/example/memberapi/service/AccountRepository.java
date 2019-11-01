@@ -12,7 +12,7 @@ public class AccountRepository {
 
     private final DynamoDBMapper dynamoDBMapper;
 
-    public Account findAccountByUserName(String userName) {
+    public Account findAccountByUserName(final String userName) {
         return dynamoDBMapper.load(Account.class, userName);
     }
 
@@ -20,5 +20,4 @@ public class AccountRepository {
         dynamoDBMapper.save(account);
         return account;
     }
-
 }

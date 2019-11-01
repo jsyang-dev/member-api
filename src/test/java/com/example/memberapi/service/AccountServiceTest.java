@@ -72,13 +72,13 @@ class AccountServiceTest {
     @Test
     void 로그인_실패_케이스_비밀번호_틀림() {
         assertThatThrownBy(() -> accountService.findAccountByUserNameAndPassword("admin", "12345"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccountException.class);
     }
 
     @Test
     void 로그인_실패_케이스_없는_사용자() {
         assertThatThrownBy(() -> accountService.findAccountByUserNameAndPassword("admin1234", "1234"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccountException.class);
     }
 
     @Test
@@ -109,7 +109,7 @@ class AccountServiceTest {
                 .build();
 
         assertThatThrownBy(()-> accountService.saveAccount(accountSaveRequestDto))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccountException.class);
     }
 
     @Test
@@ -122,7 +122,7 @@ class AccountServiceTest {
                 .build();
 
         assertThatThrownBy(()-> accountService.saveAccount(accountSaveRequestDto))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccountException.class);
     }
 
     @Test
@@ -152,7 +152,7 @@ class AccountServiceTest {
                 .build();
 
         assertThatThrownBy(()-> accountService.updateAccount(accountUpdateRequestDto))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccountException.class);
     }
 
 
