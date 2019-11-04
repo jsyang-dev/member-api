@@ -72,8 +72,8 @@ public class AccountService {
     }
 
     public String updateAccount(@NotNull AccountUpdateRequestDto accountUpdateRequestDto) throws AccountException {
-        Account account = accountRepository.findAccountByUserName(accountUpdateRequestDto.getUsername());
-        if(account == null){
+        Account account = accountRepository.findAccountByUserName(accountUpdateRequestDto.getUserName());
+        if (account == null) {
             throw new AccountException("존재하지 않는 사용자입니다!");
         }
         account.setPhone(accountUpdateRequestDto.getPhone());

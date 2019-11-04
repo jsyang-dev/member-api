@@ -2,7 +2,9 @@ package com.example.memberapi.service;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.example.memberapi.domain.Account;
 import com.example.memberapi.dto.AccountLoginResponseDto;
@@ -57,7 +59,7 @@ class AccountServiceTest {
 
 
     @AfterEach
-    void cleanUp(){
+    void cleanUp() {
         DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(Account.class);
         TableUtils.deleteTableIfExists(amazonDynamoDB, deleteTableRequest);
     }
@@ -100,7 +102,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 유저_생성_실패_테스트_이미_존재하는_사용자(){
+    void 유저_생성_실패_테스트_이미_존재하는_사용자() {
         AccountSaveRequestDto accountSaveRequestDto = AccountSaveRequestDto.createBuilder()
                 .username("admin")
                 .password("1234")
@@ -109,12 +111,12 @@ class AccountServiceTest {
                 .phone("010-8888-8888")
                 .build();
 
-        assertThatThrownBy(()-> accountService.saveAccount(accountSaveRequestDto))
+        assertThatThrownBy(() -> accountService.saveAccount(accountSaveRequestDto))
                 .isInstanceOf(AccountException.class);
     }
 
     @Test
-    void 유저_생성_실패_테스트_이름입력안함(){
+    void 유저_생성_실패_테스트_이름입력안함() {
         AccountSaveRequestDto accountSaveRequestDto = AccountSaveRequestDto.createBuilder()
                 .username("admin")
                 .password("1234")
@@ -122,7 +124,7 @@ class AccountServiceTest {
                 .phone("010-8888-8888")
                 .build();
 
-        assertThatThrownBy(()-> accountService.saveAccount(accountSaveRequestDto))
+        assertThatThrownBy(() -> accountService.saveAccount(accountSaveRequestDto))
                 .isInstanceOf(AccountException.class);
     }
 
@@ -144,7 +146,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 없는_유저_정보_수정(){
+    void 없는_유저_정보_수정() {
         AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.createBuilder()
                 .username("admin123")
                 .email("admin@lotte.net")
@@ -152,7 +154,7 @@ class AccountServiceTest {
                 .phone("010-1234-1234")
                 .build();
 
-        assertThatThrownBy(()-> accountService.updateAccount(accountUpdateRequestDto))
+        assertThatThrownBy(() -> accountService.updateAccount(accountUpdateRequestDto))
                 .isInstanceOf(AccountException.class);
     }
 

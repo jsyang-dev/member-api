@@ -2,7 +2,9 @@ package com.example.memberapi.service;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.example.memberapi.domain.Account;
 import org.junit.jupiter.api.AfterEach;
@@ -50,7 +52,7 @@ class AccountRepositoryTest {
 
 
     @AfterEach
-    void cleanUp(){
+    void cleanUp() {
         DeleteTableRequest deleteTableRequest = dynamoDBMapper.generateDeleteTableRequest(Account.class);
         TableUtils.deleteTableIfExists(amazonDynamoDB, deleteTableRequest);
     }
