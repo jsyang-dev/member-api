@@ -1,7 +1,6 @@
 package com.example.memberapi.web;
 
 import com.example.memberapi.dto.AccountInfoResponseDto;
-import com.example.memberapi.dto.AccountLoginResponseDto;
 import com.example.memberapi.dto.AccountSaveRequestDto;
 import com.example.memberapi.dto.AccountUpdateRequestDto;
 import com.example.memberapi.exception.AccountException;
@@ -9,10 +8,7 @@ import com.example.memberapi.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -29,8 +25,8 @@ public class AccountController {
      * @return AccountInfoResponseDto(username, password, name, phone, email)
      * @throws AccountException
      */
-    @GetMapping(produces = "application/json; charset=utf8")
-    public ResponseEntity<AccountInfoResponseDto> findAccount(final String username) throws AccountException {
+    @GetMapping("/{username}")
+    public ResponseEntity<AccountInfoResponseDto> findAccount(@PathVariable String username) throws AccountException {
         AccountInfoResponseDto accountResponseDto = accountService.findAccountByUsername(username);
         return new ResponseEntity<>(accountResponseDto, HttpStatus.OK);
     }
@@ -42,7 +38,7 @@ public class AccountController {
      * @throws AccountException
      */
     @PostMapping()
-    public ResponseEntity<String> createAccount(@Valid AccountSaveRequestDto accountSaveRequestDto) throws AccountException {
+    public ResponseEntity<String> createAccount(@RequestBody @Valid AccountSaveRequestDto accountSaveRequestDto) throws AccountException {
         String userName = accountService.saveAccount(accountSaveRequestDto);
         return new ResponseEntity<>(userName, HttpStatus.CREATED);
     }
@@ -54,7 +50,7 @@ public class AccountController {
      * @throws AccountException
      */
     @PutMapping()
-    public ResponseEntity<String> updateAccount(@Valid AccountUpdateRequestDto accountUpdateRequestDto) throws AccountException {
+    public ResponseEntity<String> updateAccount(@RequestBody @Valid AccountUpdateRequestDto accountUpdateRequestDto) throws AccountException {
         String userName = accountService.updateAccount(accountUpdateRequestDto);
         return new ResponseEntity<>(userName, HttpStatus.OK);
     }

@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @DynamoDBTable(tableName = "ACCOUNT")
 public class Account {
-    @DynamoDBHashKey(attributeName = "USERNAME")
+    @DynamoDBHashKey(attributeName = "username")
     private String username;
 
     @DynamoDBAttribute

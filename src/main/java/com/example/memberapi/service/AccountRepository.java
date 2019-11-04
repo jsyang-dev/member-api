@@ -12,8 +12,8 @@ public class AccountRepository {
 
     private final DynamoDBMapper dynamoDBMapper;
 
-    public Account findAccountByUserName(final String userName) {
-        return dynamoDBMapper.load(Account.class, userName);
+    public Account findAccountByUserName(final String username) {
+        return dynamoDBMapper.load(Account.class, username);
     }
 
     public Account updateAccount(Account account) {
