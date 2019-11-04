@@ -20,7 +20,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,7 +58,7 @@ class AccountControllerTest {
         TableUtils.createTableIfNotExists(amazonDynamoDB, createTableRequest);
 
         Account account = Account.createBuilder()
-                .userName("admin")
+                .username("admin")
                 .name("정찬희")
                 .password("1234")
                 .email("admin@lotte.net")
@@ -73,22 +78,18 @@ class AccountControllerTest {
     }
 
     @Test
-    void 로그인_테스트() throws Exception {
-        mockMvc.perform(post(API_URL + "/login")
-                .param("userName", "admin")
-                .param("password", "1234")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8"))
+    void 유저_정상조회_테스트() throws Exception{
+        mockMvc.perform(get(API_URL)
+        .param("username","admin"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
-
     }
 
     @Test
     void 유저_생성_성공() throws Exception {
         mockMvc.perform(post(API_URL)
-                .param("userName", "seojaeyeon")
+                .param("username", "seojaeyeon")
                 .param("email", "seojaeyeon@lotte.net")
                 .param("name", "서재연")
                 .param("password", "1234")
@@ -104,7 +105,7 @@ class AccountControllerTest {
     @Test
     void 유저_생성_실패_이미_존재하는_아이디() throws Exception {
         mockMvc.perform(post(API_URL)
-                .param("userName", "admin")
+                .param("username", "admin")
                 .param("email", "seojaeyeon@lotte.net")
                 .param("name", "서재연")
                 .param("password", "1234")
@@ -120,7 +121,7 @@ class AccountControllerTest {
     @Test
     void 유저_정상_수정() throws Exception {
         mockMvc.perform(put(API_URL)
-                .param("userName", "admin")
+                .param("username", "admin")
                 .param("email", "seojaeyeon@lotte.net")
                 .param("name", "서재연")
                 .param("password", "12345")

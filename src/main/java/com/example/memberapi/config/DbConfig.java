@@ -22,9 +22,16 @@ public class DbConfig {
     @Value("${dynamodb.region}")
     private String REGION;
 
+    @Value("${dynamodb.accessKey}")
+    private String ACCESS_KEY;
+
+    @Value("${dynamodb.secretAccessKey}")
+    private String SECRET_ACCESS_KEY;
+
+
     @Bean
     public AmazonDynamoDB amazonDynamoDB(){
-        AWSCredentials awsCredentials = new BasicAWSCredentials("key1", "key2");
+        AWSCredentials awsCredentials = new BasicAWSCredentials(ACCESS_KEY, SECRET_ACCESS_KEY);
         AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
         AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(END_POINT, REGION);
 

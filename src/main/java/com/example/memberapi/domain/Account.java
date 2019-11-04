@@ -14,7 +14,7 @@ import lombok.Setter;
 @DynamoDBTable(tableName = "ACCOUNT")
 public class Account {
     @DynamoDBHashKey(attributeName = "USERNAME")
-    private String userName;
+    private String username;
 
     @DynamoDBAttribute
     private String password;
@@ -29,8 +29,8 @@ public class Account {
     private String email;
 
     @Builder(builderMethodName = "createBuilder")
-    public Account(String userName, String password, String name, String phone, String email) {
-        this.userName = userName;
+    public Account(String username, String password, String name, String phone, String email) {
+        this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;

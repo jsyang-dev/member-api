@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.example.memberapi.domain.Account;
-import com.example.memberapi.dto.AccountResponseDto;
+import com.example.memberapi.dto.AccountLoginResponseDto;
 import com.example.memberapi.dto.AccountSaveRequestDto;
 import com.example.memberapi.dto.AccountUpdateRequestDto;
 import com.example.memberapi.exception.AccountException;
@@ -38,13 +38,14 @@ class AccountServiceTest {
     //TODO: BeforeEach, AfterEach 해결하자!
     @BeforeEach
     void createTable() {
+
         CreateTableRequest createTableRequest = dynamoDBMapper.generateCreateTableRequest(Account.class)
                 .withProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
 
         TableUtils.createTableIfNotExists(amazonDynamoDB, createTableRequest);
 
         Account account = Account.createBuilder()
-                .userName("admin")
+                .username("admin")
                 .name("정찬희")
                 .password("1234")
                 .email("admin@lotte.net")
@@ -65,7 +66,7 @@ class AccountServiceTest {
 
     @Test
     void 로그인_성공_케이스() throws AccountException {
-        AccountResponseDto account = accountService.findAccountByUserNameAndPassword("admin", "1234");
+        AccountLoginResponseDto account = accountService.findAccountByUserNameAndPassword("admin", "1234");
 
         assertThat(account.getName()).isEqualTo("정찬희");
         assertThat(account.getEmail()).isEqualTo("admin@lotte.net");
@@ -86,7 +87,7 @@ class AccountServiceTest {
     @Test
     void 유저_생성_성공_테스트() throws AccountException {
         AccountSaveRequestDto accountSaveRequestDto = AccountSaveRequestDto.createBuilder()
-                .userName("test")
+                .username("test")
                 .password("1234")
                 .name("테스트")
                 .email("test@lotte.net")
@@ -95,7 +96,7 @@ class AccountServiceTest {
 
         accountService.saveAccount(accountSaveRequestDto);
 
-        Account account = accountRepository.findAccountByUserName(accountSaveRequestDto.getUserName());
+        Account account = accountRepository.findAccountByUserName(accountSaveRequestDto.getUsername());
 
         assertThat(account).isEqualToComparingFieldByField(accountSaveRequestDto);
     }
@@ -103,7 +104,7 @@ class AccountServiceTest {
     @Test
     void 유저_생성_실패_테스트_이미_존재하는_사용자() {
         AccountSaveRequestDto accountSaveRequestDto = AccountSaveRequestDto.createBuilder()
-                .userName("admin")
+                .username("admin")
                 .password("1234")
                 .name("테스트")
                 .email("test@lotte.net")
@@ -117,7 +118,7 @@ class AccountServiceTest {
     @Test
     void 유저_생성_실패_테스트_이름입력안함() {
         AccountSaveRequestDto accountSaveRequestDto = AccountSaveRequestDto.createBuilder()
-                .userName("admin")
+                .username("admin")
                 .password("1234")
                 .email("test@lotte.net")
                 .phone("010-8888-8888")
@@ -130,7 +131,7 @@ class AccountServiceTest {
     @Test
     void 유저_정보_수정() throws AccountException {
         AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.createBuilder()
-                .userName("admin")
+                .username("admin")
                 .email("admin@lotte.net")
                 .password("12345")
                 .phone("010-1234-1234")
@@ -138,7 +139,7 @@ class AccountServiceTest {
 
         accountService.updateAccount(accountUpdateRequestDto);
 
-        Account account = accountRepository.findAccountByUserName(accountUpdateRequestDto.getUserName());
+        Account account = accountRepository.findAccountByUserName(accountUpdateRequestDto.getUsername());
 
         assertThat(account.getPassword()).isEqualTo("12345");
 
@@ -147,7 +148,7 @@ class AccountServiceTest {
     @Test
     void 없는_유저_정보_수정() {
         AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.createBuilder()
-                .userName("admin123")
+                .username("admin123")
                 .email("admin@lotte.net")
                 .password("12345")
                 .phone("010-1234-1234")

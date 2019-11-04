@@ -1,26 +1,21 @@
 package com.example.memberapi.dto;
 
-import lombok.*;
-
-import javax.validation.constraints.NotBlank;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AccountSaveRequestDto {
-    @NotBlank
+public class AccountInfoResponseDto {
     private String username;
-    @NotBlank
     private String password;
-    @NotBlank
     private String name;
-    @NotBlank
     private String phone;
-    @NotBlank
     private String email;
 
     @Builder(builderMethodName = "createBuilder")
-    public AccountSaveRequestDto(@NotBlank String username, @NotBlank String password, @NotBlank String name, @NotBlank String phone, @NotBlank String email) {
+    public AccountInfoResponseDto(String username, String password, String name, String phone, String email) {
         this.username = username;
         this.password = password;
         this.name = name;

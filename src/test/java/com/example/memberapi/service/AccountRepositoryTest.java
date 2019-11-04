@@ -31,13 +31,14 @@ class AccountRepositoryTest {
     //TODO: BeforeEach, AfterEach 해결하자!
     @BeforeEach
     void createTable() {
+
         CreateTableRequest createTableRequest = dynamoDBMapper.generateCreateTableRequest(Account.class)
                 .withProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
 
         TableUtils.createTableIfNotExists(amazonDynamoDB, createTableRequest);
 
         Account account = Account.createBuilder()
-                .userName("admin")
+                .username("admin")
                 .name("정찬희")
                 .password("1234")
                 .email("admin@lotte.net")
@@ -69,7 +70,7 @@ class AccountRepositoryTest {
     void Account_추가_테스트() {
         //before
         Account account = Account.createBuilder()
-                .userName("test")
+                .username("test")
                 .name("서재연")
                 .password("1234")
                 .email("seojaeyeon@lotte.net")
@@ -80,7 +81,7 @@ class AccountRepositoryTest {
         accountRepository.updateAccount(account);
 
         //then
-        Account findAccount = accountRepository.findAccountByUserName(account.getUserName());
+        Account findAccount = accountRepository.findAccountByUserName(account.getUsername());
         assertThat(findAccount).isEqualToComparingFieldByField(account);
 
     }
@@ -89,7 +90,7 @@ class AccountRepositoryTest {
     void Account_패스워드_수정_테스트() {
         //before
         Account account = Account.createBuilder()
-                .userName("admin")
+                .username("admin")
                 .name("정찬희")
                 .password("12345")
                 .email("admin@lotte.net")
@@ -100,7 +101,7 @@ class AccountRepositoryTest {
         accountRepository.updateAccount(account);
 
         //then
-        Account findAccount = accountRepository.findAccountByUserName(account.getUserName());
+        Account findAccount = accountRepository.findAccountByUserName(account.getUsername());
         assertThat(findAccount).isEqualToComparingFieldByField(account);
     }
 
