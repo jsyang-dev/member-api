@@ -7,15 +7,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AccountResponseDto {
-    private String userName;
+public class AccountLoginResponseDto {
+    private String username;
     private String name;
     private String email;
     private String phone;
 
     @Builder(builderMethodName = "createBuilder")
-    public AccountResponseDto(String userName, String name, String email, String phone) {
-        this.userName = userName;
+    public AccountLoginResponseDto(String username, String name, String email, String phone) {
+        this.username = username;
         this.name = name;
         this.email = email;
         this.phone = phone;
